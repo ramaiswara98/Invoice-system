@@ -4,9 +4,9 @@
 
 Invoice system is web app that provide an invoice automation from school to student
 
-## Installation & updates
+## Installation
 
-`git clone` then `download zip` 
+`git clone` or `download zip` 
 
 ## Setup
 import the aedno.sql file into your MySQL database, you can find aedno.sql on this respository.
