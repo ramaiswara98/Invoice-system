@@ -1,0 +1,205 @@
+.menu-box{
+    background-color: #F7F6FE;
+}
+#menu{
+    background-color: #F7F6FE;
+    border-radius: 10px;
+    width: 95%;
+    padding: 10px;
+}
+
+.student-select{
+    width: 100% !important;
+}
+.first-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-box{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.info-box-left-text{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+}
+
+
+
+
+.info-box-label{
+    width: 126px;
+}
+.invoice-box-title{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+}
+
+.invoice-box-item{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+}
+
+
+.invoice-box{
+    margin-top: 20px;
+}
+
+.invoice-title-text{
+    text-align: center;
+    width: 100%;
+}
+.invoice-text{
+    text-align: center;
+    width: 100%;
+}
+
+.offical-text{
+    text-align: left;
+    width: 100%;
+    font-weight: bold;
+}
+
+.total{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+}
+
+.total-right{
+    width: 120px;
+    text-align: right;
+}
+
+.offical{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px solid #808080;
+    padding: 0px 20px 0px 20px;
+}
+
+.offical p{
+    text-align: left;
+}
+
+.term p{
+    font-size: 10px !important;
+    margin: 0px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.bottom{
+margin-top: 30px;
+}
+
+.bottom p{
+text-align: center;
+margin: 0px;
+font-family: "Times New Roman", Times, serif;
+}
+
+.full-invoice{
+    width: 80%;
+    margin: auto;
+}
+.full-invoice p{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12px;
+    margin: 0px;
+}
+.full-invoice h4{
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    margin: 0px;
+}
+
+.disc{
+    width: 10%;
+}
+.desc{
+    width: 40%;
+}
+.qty{
+    width: 10%;
+}
+.price{
+    width: 20%;
+}
+.amount{
+    width: 20%;
+}
+
+.form-class{
+    width: 30%;
+}
+
+.form-qty{
+    width: 10%;
+}
+.form-price{
+    width: 20%;
+}
+.form-amount{
+    width: 20%;
+}
+.form-disc{
+    width: 10%;
+}
+.form-delete{
+    width: 5%;
+}
+.button-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.f32 .flag {
+    vertical-align: middle;
+    margin: -8px 0;
+}
+
+progress {
+    width: 100%;
+}
+.icon{
+    width: 20px;
+}
+
+.dashboard-row-one{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.card-board{
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
+    /* border: 1px solid #808080; */
+    box-shadow: -6px -7px #E5E5FD;
+    width: 400px;
+    background: #F7F6FE;
+}
+
+.form-alert{
+    font-size: 12px;
+    color:red;
+}
+.logo{
+    padding: 10px 10px 10px 0px;
+}
