@@ -233,13 +233,13 @@ class Admin extends BaseController
         if($session->get('role') != '1'){
           $branch_id = $session->get('branch_id');
           $db = db_connect();
-          $student_query = $db->query("SELECT student.id as student_id, student.*, branch.* FROM student
+          $student_query = $db->query("SELECT student.id as student_id, student.*, branch.branch_name, branch.id FROM student
           INNER JOIN branch ON branch.id = student.branch_id 
           WHERE student.branch_id = $branch_id");
           $student = $student_query->getResult();
         }else{
           $db = db_connect();
-          $student_query = $db->query("SELECT student.id as student_id, student.*, branch.* FROM student
+          $student_query = $db->query("SELECT student.id as student_id, student.*,branch.branch_name, branch.id FROM student
           INNER JOIN branch ON branch.id = student.branch_id ");
           $student = $student_query->getResult();
         }
@@ -349,7 +349,7 @@ class Admin extends BaseController
      {   
         $session = session();
         $data['session'] = $session;
-         return view('admin/createCurrency');
+         return view('admin/createCurrency',$data);
      }
  
      public function saveNewCurrency(){
@@ -398,7 +398,7 @@ class Admin extends BaseController
           $student = $student_query->getResult();
         }else{
           $db = db_connect();
-          $student_query = $db->query("SELECT * FROM student");
+          $student_query = $db->query("SELECT student.*, currency.code FROM student INNER JOIN branch ON branch.id = student.branch_id INNER JOIN currency ON currency.id = branch.currency_id");
           $student = $student_query->getResult();
         }
         // $model =  new StudentModel();
@@ -414,6 +414,11 @@ class Admin extends BaseController
         $data['class'] = $class;
         $session = session();
         $data['session'] = $session;
+        $s_id = NULL;
+        if($this->request->getGet('student-id')!= NULL){
+          $s_id = $this->request->getGet('student-id');
+        }
+        $data['s_id'] = $s_id;
           return view('admin/createPayment', $data);
       }
 
@@ -668,24 +673,108 @@ $items_query = $db->query('SELECT * FROM items
         $top_class = $top_class_query->getResult();
         $last_login_query = $db->query("SELECT * FROM users WHERE users.branch_id = $branch_id ORDER BY last_login DESC LIMIT 5");
         $last_login = $last_login_query->getResult();
+        $query_items = $db->query("
+    SELECT 
+        items.id AS items_id, 
+        items.*, 
+        invoice.*, 
+        student.*, 
+        class.id AS class_id,
+        class.*, 
+        branch.*, 
+        COALESCE(att.attendance_total, 0) AS attendance_total
+    FROM 
+        items
+    INNER JOIN 
+        invoice ON items.invoice_id = invoice.id
+    INNER JOIN 
+        class ON items.class_id = class.id
+    INNER JOIN 
+        branch ON branch.id = class.branch_id
+    INNER JOIN 
+        student ON student.id = invoice.student_id
+    LEFT JOIN (
+        SELECT 
+            items_id, 
+            COUNT(*) AS attendance_total
+        FROM 
+            attendance
+        GROUP BY 
+            items_id
+    ) AS att ON items.id = att.items_id
+    WHERE 
+        items.qty - COALESCE(att.attendance_total, 0) = 1 AND branch.id = $branch_id
+");
+      $items = $query_items->getResult();
+       $data['items'] = $items;
+
       }else{
+        $branch_id='0';
+        $andTopClass = "";
+        $andPaid = "";
+        $andLastInvoice="";
+        $andLastLogin="";
+        $andAttendance = "";
+        if($this->request->getGet('branch') != '0' && $this->request->getGet('branch') != NULL){
+            $branch_id = $this->request->getGet('branch');
+            $where = "WHERE branch.id = ".$branch_id;
+            $andPaid = "AND student.branch_id = ".$branch_id;
+            $andLastInvoice  = " WHERE student.branch_id = ".$branch_id;
+            $andTopClass  = " WHERE class.branch_id = ".$branch_id;
+            $andLastLogin = " WHERE users.branch_id = ".$branch_id;
+            $andAttendance = " AND branch.id = ".$branch_id;
+          }
         $db = db_connect();
-        $paid_query = $db->query("SELECT * FROM invoice where status = 'Paid'"); 
-        $unpaid_query = $db->query("SELECT * FROM invoice where status = 'Unpaid'"); 
+        $paid_query = $db->query("SELECT invoice.* FROM invoice INNER JOIN student ON invoice.student_id = student.id where status = 'Paid' $andPaid"); 
+        $unpaid_query = $db->query("SELECT invoice.* FROM invoice INNER JOIN student ON invoice.student_id = student.id where status = 'Unpaid' $andPaid"); 
         $paid = $paid_query->getResultArray();
         $unpaid = $unpaid_query->getResultArray();
-        $last_invoice_query = $db->query("SELECT invoice.id as invoice_id, invoice.*, student.* FROM invoice INNER JOIN student ON student.id = invoice.student_id ORDER BY date DESC LIMIT 5");
+        $last_invoice_query = $db->query("SELECT invoice.id as invoice_id, invoice.*, student.* FROM invoice INNER JOIN student ON student.id = invoice.student_id".$andLastInvoice. " ORDER BY date DESC LIMIT 5");
         $last_invoice = $last_invoice_query->getResult();
         $top_class_query = $db->query("SELECT class_id, COUNT(*) AS class_count, class.class_name
         FROM items
-        INNER JOIN class ON class.id = items.class_id
-        GROUP BY class_id
+        INNER JOIN class ON class.id = items.class_id".$andTopClass.
+        " GROUP BY class_id
         ORDER BY class_count DESC
         LIMIT 5");
         $top_class = $top_class_query->getResult();
-        $last_login_query = $db->query("SELECT * FROM users ORDER BY last_login DESC LIMIT 5");
+        $last_login_query = $db->query("SELECT * FROM users".$andLastLogin." ORDER BY last_login DESC LIMIT 5");
         $last_login = $last_login_query->getResult();
         
+        $query_items = $db->query("
+    SELECT 
+        items.id AS items_id, 
+        items.*, 
+        invoice.*, 
+        student.*, 
+        class.id AS class_id,
+        class.*, 
+        branch.*, 
+        COALESCE(att.attendance_total, 0) AS attendance_total
+    FROM 
+        items
+    INNER JOIN 
+        invoice ON items.invoice_id = invoice.id
+    INNER JOIN 
+        class ON items.class_id = class.id
+    INNER JOIN 
+        branch ON branch.id = class.branch_id
+    INNER JOIN 
+        student ON student.id = invoice.student_id
+    LEFT JOIN (
+        SELECT 
+            items_id, 
+            COUNT(*) AS attendance_total
+        FROM 
+            attendance
+        GROUP BY 
+            items_id
+    ) AS att ON items.id = att.items_id
+    WHERE 
+        items.qty - COALESCE(att.attendance_total, 0) = 1".$andAttendance);
+
+      $items = $query_items->getResult();
+       $data['items'] = $items;
       }
 
       $data['paid'] = $paid;
@@ -693,6 +782,9 @@ $items_query = $db->query('SELECT * FROM items
       $data['last_invoice'] = $last_invoice;
       $data['top_class'] = $top_class;
       $data['last_login'] = $last_login;
+      $branch_model = new BranchModel();
+      $data['branch'] = $branch_model->getAll();
+      $data['pass_branch'] = $this->request->getGet('branch');
       return view('admin/dashboard',$data);
     }
 

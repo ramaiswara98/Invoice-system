@@ -4,7 +4,7 @@
 <div>
     <h1>Edit Branch</h1>
 
-    <form action="/aedno/admin/save-branch" method="POST">
+    <form action="<?php echo base_url();?>admin/save-branch" method="POST">
         <?= csrf_field(); ?>
         <input type="hidden" name="branch_id" value="<?php echo $branch->id ?>"/>
         <div class="mb-3">

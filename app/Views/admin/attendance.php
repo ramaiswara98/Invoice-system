@@ -27,10 +27,14 @@
       echo '<td>'.$it->date.'</td>';
       echo '<td>'.$it->attendance_total."/".$it->qty.'</td>';
       if($it->attendance_total < $it->qty){
-        echo '<td><button class="btn btn-primary" onclick="submitForm(' . $it->items_id . ')"><i class="fa-solid fa-user-plus"></i></button> <button onclick="getAttendance(' . $it->items_id . ', \'' . $it->name . '\')" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-clock-rotate-left"></i></button></td>'; 
-    }else{
-        echo '<td><button disabled class="btn btn-primary" onclick="submitForm(' . $it->items_id . ')"><i class="fa-solid fa-user-plus"></i></button> <button onclick="getAttendance(' . $it->items_id . ', \'' . $it->name . '\')" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-clock-rotate-left"></i></button></td>';
+        if(($it->qty - $it->attendance_total) == 1 ){
+          echo '<td><button class="btn btn-primary" onclick="submitForm(' . $it->items_id . ')"><i class="fa-solid fa-user-plus"></i></button> <button onclick="getAttendance(' . $it->items_id . ', \'' . $it->name . '\')" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-clock-rotate-left"></i></button><a href="'.base_url().'admin/create-payment?student-id='.$it->student_id.'" class="btn btn-success" style="margin-left:5px"><i class="fa-solid fa-file-circle-plus"></i></a></td>'; 
+        }else{
+          echo '<td><button class="btn btn-primary" onclick="submitForm(' . $it->items_id . ')"><i class="fa-solid fa-user-plus"></i></button> <button onclick="getAttendance(' . $it->items_id . ', \'' . $it->name . '\')" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-clock-rotate-left"></i></button></td>'; 
+        }
 
+    }else{
+      echo '<td><button disabled class="btn btn-primary" onclick="submitForm(' . $it->items_id . ')"><i class="fa-solid fa-user-plus"></i></button> <button onclick="getAttendance(' . $it->items_id . ', \'' . $it->name . '\')" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-clock-rotate-left"></i></button><a href="'.base_url().'admin/create-payment?student-id='.$it->student_id.'" class="btn btn-success" style="margin-left:5px"><i class="fa-solid fa-file-circle-plus"></i></a></td>'; 
       }
     //   echo "<td><a href='" . base_url() . "admin/edit-class/" . $c->class_id . "' type='button' class='btn btn-warning' style='margin-right:10px;margin-left:10px'><i class='fa-solid fa-pen-to-square'></i></a><a href='" . base_url() . "admin/delete-class/" . $c->class_id . "' type='button' class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>";
       echo '</tr>';

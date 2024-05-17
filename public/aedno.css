@@ -185,14 +185,15 @@ progress {
     flex-direction: row;
     justify-content: space-around;
     margin-bottom: 20px;
+    gap: 20px;
 }
 
 .card-board{
     padding: 10px 20px 10px 20px;
     border-radius: 10px;
     /* border: 1px solid #808080; */
-    box-shadow: -6px -7px #E5E5FD;
-    width: 400px;
+    /* box-shadow: -6px -7px #E5E5FD; */
+    width: 100%;
     background: #F7F6FE;
 }
 

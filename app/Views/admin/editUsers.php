@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 <div>
     <h1>Edit Users</h1>
-    <form action="/aedno/admin/save-users" method="POST">
+    <form action="<?php echo base_url();?>admin/save-users" method="POST">
         <?= csrf_field(); ?>
         <input type="hidden" name="id" value="<?= $user['id']; ?>" />
         <div class="mb-3">

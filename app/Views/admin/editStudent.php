@@ -3,7 +3,7 @@
 <?= $this->section('content');?>
 <div>
    <h1>Edit Student</h1>
-   <form action="/aedno/admin/save-student" method="POST">
+   <form action="<?php echo base_url();?>admin/save-student" method="POST">
         <?= csrf_field(); ?>
         <input type="hidden" name="student_id" value="<?= $student->id ?>"/>
         <div class="mb-3">

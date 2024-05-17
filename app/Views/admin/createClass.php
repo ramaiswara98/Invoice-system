@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 <div>
     <h1>Create Classes</h1>
-    <form action="/aedno/admin/save-new-class" method="POST" id="class-form">
+    <form action="<?php echo base_url();?>admin/save-new-class" method="POST" id="class-form">
         <?= csrf_field(); ?>
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Class Name <span style="color:red;">*</span></label>

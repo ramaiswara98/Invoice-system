@@ -41,7 +41,7 @@
 
               $code = $it->code;
               if ($invoice_id !== 0) {
-                // echo "<td>" . $code . " " . number_format($amount, 2) . "</td>";
+                echo "<td>" . $code . " " . number_format($amount, 2) . "</td>";
                 echo "<td><a href='" . base_url() . "admin/invoice/" . $in_id . "' type='button' class='btn btn-secondary'><i class='fa-solid fa-eye'></i></a><a href='" . base_url() . "admin/edit-payment/" . $in_id . "' type='button' class='btn btn-warning' style='margin-right:10px;margin-left:10px'><i class='fa-solid fa-pen-to-square'></i></a><a href='" . base_url() . "admin/delete-invoice/" . $in_id . "' type='button' class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>";
                 echo "</tr>";
               }

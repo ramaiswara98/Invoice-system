@@ -5,7 +5,7 @@
     <h1>Create Branch</h1>
 
 
-    <form action="/aedno/admin/save-new-branch" method="POST" id="branch-form">
+    <form action="<?php echo base_url();?>admin/save-new-branch" method="POST" id="branch-form">
         <?= csrf_field(); ?>
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Branch Name <span style="color:red;">*</span></label>

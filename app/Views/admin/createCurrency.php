@@ -3,7 +3,7 @@
 <?= $this->section('content');?>
 <div>
    <h1>Create Currency</h1>
-   <form action="/aedno/admin/save-new-currency" method="POST">
+   <form action="<?php echo base_url();?>admin/save-new-currency" method="POST">
         <?= csrf_field(); ?>
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Currency Name</label>

@@ -3,14 +3,19 @@
 <?= $this->section('content'); ?>
 <div>
     <h1>Create Payment</h1>
-    <form action="/aedno/admin/save-new-payment" method="POST" id="invoice-form">
+    <form action="<?php echo base_url();?>admin/save-new-payment" method="POST" id="invoice-form">
         <?= csrf_field(); ?>
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Choose Student <span style="color:red;">*</span></label><br />
             <select class="selectpicker student-select" data-live-search="true" style="width: 100%;" name="student_id" id="student_id">
                 <option selected disabled value="0">--- Choose Student ---</option>
                 <?php foreach ($student as $s) {
-                    echo "<option value='" . $s->id . "' data-branch='".$s->branch_id."' >" . $s->name . "</option>";
+                    if($s_id != NULL && $s_id == $s->id){
+                        echo "<option selected data-code='".$s->code."' value='" . $s->id . "' data-branch='".$s->branch_id."' >" . $s->name . "</option>";
+                    }else{
+                        echo "<option data-code='".$s->code."' value='" . $s->id . "' data-branch='".$s->branch_id."' >" . $s->name . "</option>";
+                    }
+
                 } ?>
 
             </select>
@@ -250,7 +255,10 @@
         }
         var subTotalElement = document.getElementById("sub-total");
         var currencySymbol = subTotalElement.textContent.split(" ")[0]; // Extract currency symbol from the text content
-        subTotalElement.textContent = <?php echo json_encode($class[0]->code);?> + " " + total.toFixed(2);
+        var studentElement = document.getElementById('student_id');
+        var selectedOption = studentElement.options[studentElement.selectedIndex];
+        var dataCode = selectedOption.dataset.code;
+        subTotalElement.textContent = dataCode + " " + total.toFixed(2);
     }
 
     function calculateTotal(){
@@ -264,7 +272,10 @@
 
         var subTotalElement = document.getElementById("sub-total");
         var currencySymbol = subTotalElement.textContent.split(" ")[0]; // Extract currency symbol from the text content
-        subTotalElement.textContent = currencySymbol + " " + total.toFixed(2);
+        var studentElement = document.getElementById('student_id');
+        var selectedOption = studentElement.options[studentElement.selectedIndex];
+        var dataCode = selectedOption.dataset.code;
+        subTotalElement.textContent = dataCode + " " + total.toFixed(2);
     }
 
     // Function to handle change event for a specific index
@@ -290,16 +301,20 @@
     document.getElementById('status').addEventListener('change', function() {
         var receive =  document.getElementById("receive");
         var statusValue = this.value;
+        var studentElement = document.getElementById('student_id');
+            var selectedOption = studentElement.options[studentElement.selectedIndex];
+            var dataCode = selectedOption.dataset.code;
         if(statusValue == "Paid"){
             receive.style.display = "block";
             var total_paid = document.getElementById("total-paid");
             var r_amount =  document.getElementById("r_amount");
-            total_paid.innerHTML = <?php echo json_encode($class[0]->code);?>+" "+r_amount.value;
+            total_paid.innerHTML = dataCode+" "+r_amount.value;
 
 
         }else{
+            
             var total_paid = document.getElementById("total-paid");
-            total_paid.innerHTML = <?php echo json_encode($class[0]->code);?>+" 0.00"
+            total_paid.innerHTML = dataCode+" 0.00"
             receive.style.display = "none";
             calculateEveything();
         }
@@ -307,9 +322,12 @@
     });
 
     document.getElementById("r_amount").addEventListener('change', function(){
+        var studentElement = document.getElementById('student_id');
+        var selectedOption = studentElement.options[studentElement.selectedIndex];
+        var dataCode = selectedOption.dataset.code;
         var r_amount = this.value;
         var total_paid = document.getElementById("total-paid");
-        total_paid.innerHTML =<?php echo json_encode($class[0]->code);?>+" "+parseFloat(r_amount).toFixed(2);
+        total_paid.innerHTML =dataCode+" "+parseFloat(r_amount).toFixed(2);
         var subTotalElement = document.getElementById("sub-total");
         var subTotalText = subTotalElement.textContent;
         var subTotalValue = subTotalText.split(" ")[1];
@@ -317,7 +335,7 @@
             console.log("food");
             roaster = document.getElementById('r_amount');
             roaster.value = parseFloat(subTotalValue);
-            total_paid.innerHTML =<?php echo json_encode($class[0]->code);?>+" "+parseFloat(roaster.value).toFixed(2);
+            total_paid.innerHTML =dataCode+" "+parseFloat(roaster.value).toFixed(2);
             
         }
         calculateEveything();
@@ -348,6 +366,9 @@
     attachEventListeners();
 
     function calculateEveything(){
+        var studentElement = document.getElementById('student_id');
+        var selectedOption = studentElement.options[studentElement.selectedIndex];
+        var dataCode = selectedOption.dataset.code;
         var subTotalElement = document.getElementById("sub-total");
         var subTotalText = subTotalElement.textContent;
         var subTotalValue = subTotalText.split(" ")[1];
@@ -356,7 +377,7 @@
         var paidTotalValue = paidTotalText.split(" ")[1];
         var dueTotalElement = document.getElementById("total-due");
         var totalDue = subTotalValue - paidTotalValue;
-        dueTotalElement.innerHTML = <?php echo json_encode($class[0]->code);?>+" "+totalDue.toFixed(2);
+        dueTotalElement.innerHTML = dataCode+" "+totalDue.toFixed(2);
     }
 
     $(document).ready(function() {

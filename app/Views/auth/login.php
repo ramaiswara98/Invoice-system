@@ -32,6 +32,7 @@
       <button class="btn btn-primary" style="width:120px">Login</button>
     </form>
   </div>
+  
 </div>
 
 <?= $this->endSection(); ?>

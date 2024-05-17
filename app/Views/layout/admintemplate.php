@@ -41,7 +41,7 @@
                         <a href="<?= base_url(); ?>" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto  text-decoration-none">
                             <span class="fs-5 d-none d-sm-inline"><img src="<?php echo base_url(); ?>public/aedno-long-nobg.png" style="width:90%"></span>
                         </a>
-                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                        <ul class="nav nav-pills flex-column  mb-0 align-items-center align-items-sm-start" id="menu">
                             <!-- <li class="nav-item">
                         <a href="#" class="nav-link align-middle px-0">
                             <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
@@ -139,21 +139,27 @@
                                     </li>
                                 </ul>
                             </li>
+
                         </ul>
                         <hr>
-                        <div class="dropdown pb-4">
+                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="<?= base_url() . "public/person.png" ?>" alt="hugenerd" width="30" height="30" class="rounded-circle" style="border: 1px #808080 solid;padding :2px">
-                                <span class="d-none d-sm-inline mx-1" style="color:var(--bs-link-color)"><?php echo $session->get('name'); ?></span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <span class="d-none d-sm-inline mx-1" style="color:var(--bs-link-color)" data-toggle="tooltip" title="<?php echo htmlspecialchars($session->get('name')); ?>">
+                                    <?php echo substr($session->get('name'), 0, 10); ?>
+                                </span> </a>
+                            <div class="dropdown">
+
+                                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                                    <!-- <li><a class="dropdown-item" href="#">Profile</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="<?php echo base_url() . "auth/logout" ?>">Sign out</a></li>
-                            </ul>
-                        </div>
+                                </li> -->
+                                    <li><a class="dropdown-item" href="<?php echo base_url() . "auth/logout" ?>">Sign out</a></li>
+                                </ul>
+                            </div>
+                        </ul>
+
                     </div>
                 </div>
                 <div class="col py-3" style="background-color: #FFF;border-radius:10px">
@@ -169,6 +175,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </body>
 
 </html>
