@@ -15,6 +15,11 @@ use App\Models\UsersModel;
 use GuzzleHttp\Psr7\MultipartStream;
 use CodeIgniter\Files\File;
 use CodeIgniter\HTTP\Files\UploadedFile;
+use CodeIgniter\Config\Services; // Import necessary services
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Controllers\Exception;
 
 
 class Admin extends BaseController
@@ -262,6 +267,12 @@ class Admin extends BaseController
         return view('admin/createStudent',$data);
     }
 
+    public function importStudent(){
+      $session = session();
+      $data['session'] = $session;
+      return view('admin/importStudent',$data);
+    }
+
     public function saveNewStudent(){
         $data = $this->request->getVar();
         
@@ -279,7 +290,7 @@ class Admin extends BaseController
         $newBranch = $model->create($data_b);
         $session = session();
         $data['session'] = $session;
-        return redirect()->to(base_url()."/admin/student");
+        return redirect()->to(base_url()."/admin/student")->with("success","Successfully Create student");
     }
     public function editStudent($id)
     {   
@@ -301,7 +312,7 @@ class Admin extends BaseController
     public function deleteStudent($id){
         $model = new StudentModel();
         $model->deleteStudent($id);
-        return redirect()->to(base_url()."/admin/student");
+        return redirect()->to(base_url()."/admin/student")->with("success","Successfully Delete student");
       }
 
       public function saveStudent(){
@@ -332,7 +343,7 @@ class Admin extends BaseController
         );
         $db = db_connect();
         $db->table('student')->where('id', $id)->update($student_data);
-        return redirect()->to(base_url()."/admin/student");
+        return redirect()->to(base_url()."/admin/student")->with("success","Successfully Update student");
     }
 
     //Currency
@@ -394,7 +405,7 @@ class Admin extends BaseController
         if($session->get('role') != '1'){
           $branch_id = $session->get('branch_id');
           $db = db_connect();
-          $student_query = $db->query("SELECT * FROM student WHERE student.branch_id = $branch_id");
+          $student_query = $db->query("SELECT student.*, currency.code FROM student INNER JOIN branch ON branch.id = student.branch_id INNER JOIN currency ON currency.id = branch.currency_id WHERE student.branch_id = $branch_id");
           $student = $student_query->getResult();
         }else{
           $db = db_connect();
@@ -885,5 +896,58 @@ public function getAttendance($id){
   return json_encode(['success' => true,'attendance' => $attendance]);
 }
 
+
+public function getImported(){
+  $file = $this->request->getFile('student');
+  $extension =  $file->getClientExtension();
+  if( $extension == 'xlsx' || $extension == 'xls'){
+    if($extension == 'xls'){
+      $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+    }else{
+      $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+    }
+
+    $spreadsheet = $reader->load($file);
+    $student = $spreadsheet->getActiveSheet()->toArray();
+    $branch_model = new BranchModel();
+    $branch = $branch_model->getAll();
+    $branches = [];
+    $imported_student = 0;
+    foreach($branch as $br){
+      $branch_name = strtolower($br['branch_name']);
+      $branch_name = str_replace(" ","",$branch_name);
+      $branches[$branch_name] = $br['id'];
+       
+      
+    }
+    foreach($student as $key => $st){
+      if($key == 0){
+        continue;
+      }else{
+        $bra_name = $st[8];
+        $bra_name = strtolower($bra_name);
+        $bra_name = str_replace(" ","",$bra_name);
+        $data_b['name'] = $st[1];
+        $data_b['email'] = $st[2];
+        $data_b['address'] = $st[3];
+        $data_b['school'] = $st[4];
+        $data_b['grade'] = str_replace(":",".",$st[5]);
+        $data_b['parent_name'] = $st[6];
+        $data_b['parent_email'] = $st[7];
+        $data_b['branch_id'] =  $branches[$bra_name];
+        $data_b['student_no'] = $st[1];
+        $model =  new StudentModel();
+        $newBranch = $model->create($data_b);
+        if($newBranch){
+          $imported_student++;
+        }
+      }
+    }
+    return redirect()->to(base_url('admin/student'))->with('success', 'Succesfully imported '.$imported_student.' students');
+  }else{
+    echo "Format file not acceptable";
+  }
+  
+}
 
 }

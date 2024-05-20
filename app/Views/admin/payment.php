@@ -5,7 +5,7 @@
   <h1>Invoice</h1>
   <a href='<?= base_url() . "admin/create-payment" ?>' class="btn btn-primary"> Create Invoice</a>
   <br/><br/>
-  <!-- <table id="na_datatable" class="table table-bordered table-striped" width="100%">
+  <table id="na_datatable" class="table table-bordered table-striped" width="100%">
     <thead>
       <tr>
         <th scope="col">#Invoice No.</th>
@@ -17,8 +17,8 @@
     </thead>
     <tbody>
     </tbody>
-  </table> -->
-  <table class="table table-striped table-hover">
+  </table>
+  <!-- <table class="table table-striped table-hover">
     <thead>
       <tr>
         <th scope="col">#Invoice No.</th>
@@ -103,7 +103,7 @@
 
 
     </tbody>
-  </table>
+  </table> -->
 </div>
 <script src="<?php echo base_url() ?>public/datatable/jquery.dataTables.js"></script>
 <script src="<?php echo base_url() ?>public/datatable/dataTables.bootstrap4.js"></script>

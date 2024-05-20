@@ -120,7 +120,29 @@
     </form>
 </div>
 <script>
+    function changeClass(){
+        var selectedOption = document.getElementById('student_id').options[document.getElementById('student_id').selectedIndex];
+        var branch_id = selectedOption.getAttribute('data-branch');
+       
+        var classess =  document.getElementById("select-class1");
+        var classData = <?php echo json_encode($class);?>;
+        var makan = "<option selected disabled value='0'>--- Choose Class ---</option>";
+        classData.map((classs,index) => {
+            if(classs.branch_id == branch_id){
+                
+                makan+= "<option data-price="+classs.price+" data-currency="+classs.currency_id+" value="+classs.class_id+">"+classs.class_name+"</option>"
 
+            }
+            
+        })
+        classess.innerHTML = makan;
+        document.getElementById("add-more-class").removeAttribute("disabled");
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+        changeClass();
+    });
     document.getElementById("generate-invoice").addEventListener("click", function(){
         var chooseStudent =  document.getElementById("student_id");
         var chooseClass = document.getElementById("select-class1");

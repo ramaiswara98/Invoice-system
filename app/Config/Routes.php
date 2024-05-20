@@ -66,6 +66,9 @@ $routes->group('admin', ['filter' => 'authCheck'], function($routes) {
     $routes->get('delete-student/(:num)', 'Admin::deleteStudent/$1');
     $routes->get('edit-student/(:num)', 'Admin::editStudent/$1');
     $routes->post('save-student', 'Admin::saveStudent');
+    $routes->get('import-student', 'Admin::importStudent');
+    $routes->post('get-imported-student', 'Admin::getImported');
+    $routes->get('dt-student', 'DataTable::student');
 
     //Class
     $routes->get('class', 'Admin::class');
