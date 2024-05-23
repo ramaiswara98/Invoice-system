@@ -4,8 +4,9 @@
 <div class="button-container">
 <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 <button type="button" class="btn btn-primary" onclick="generatePDF()">Download PDF</button>
-<button type="button" class="btn btn-primary" onclick="sendPDFToController('<?= $student['email'];?>','<?= $student['name'];?>','<?= $student['name'];?>')">Send to Student</button>
-<button type="button" class="btn btn-primary" onclick="sendPDFToController('<?= $student['parent_email'];?>','<?= $student['name'];?>','<?= $student['parent_name'];?>')">Send to Parent/Guardian</button>
+<button type="button" id="email_student" class="btn btn-primary" onclick="sendPDFToController('<?= $student['email'];?>','<?= $student['name'];?>','<?= $student['name'];?>')">Send to Student</button>
+<button type="button" id="email_parent"
+class="btn btn-primary" onclick="sendPDFToController('<?= $student['parent_email'];?>','<?= $student['name'];?>','<?= $student['parent_name'];?>')">Send to Parent/Guardian</button>
 
 </div>
 <div class="full-invoice" id="full-invoice">
@@ -137,7 +138,7 @@
     <div class="term">
         <p>Term & Conditions:</p>
         <p>1) All payments by Cash or Transfer.</p>
-        <p>2) Transfer to be made to Anastatsia Lukito, BCA 7725031238</p>
+        <p>2) Transfer to be made to <?php echo $items[0]->account_name ?>, <?php echo $items[0]->bank_name." ".$items[0]->account_number; ?></p>
     </div>
 
     <div class="bottom">
@@ -203,6 +204,15 @@
 
     async function sendPDFToController($email,$student_name,$name) {
         try {
+            var button;
+			var btnText;
+			if($student_name == $name){
+				button = document.getElementById('email_student');
+				btnText = "Send to Student"
+			}else{
+				button = document.getElementById('email_parent');
+				btnText = "Send to Parent/Guardian"
+			}
             var pdfBlob = await savePDF(); // Get the PDF Blob
 			console.log(pdfBlob);
             var formData = new FormData();
@@ -221,12 +231,18 @@
 
             if (response.ok) {
                 const jsonData = await response.json(); // Parse response as JSON
-  console.log(jsonData);
+                alert("Email has been sent successfully.");
+				button.disabled=false;
+				button.textContent = btnText;
             } else {
-                console.error('Error sending PDF to server1:', response);
+                alert("Something wrong, email is not sent");
+				button.disabled=false;
+				button.textContent = btnText;
             }
         } catch (error) {
-            console.error('Error sending PDF to server:', error);
+            alert("Something wrong, email is not sent");
+				button.disabled=false;
+				button.textContent = btnText;
         }
     }
     

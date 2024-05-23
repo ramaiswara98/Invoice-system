@@ -33,7 +33,24 @@
                 ?>
             </select>
         </div>
-
+        <br/>
+        <p>Payment Info:</p>
+        <hr/>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Bank Name <span style="color:red;">*</span></label>
+            <input type="text" class="form-control" id="form-name" placeholder="Bank Name" value="<?php echo $branch->bank_name ?>" name="bank_name" required>
+            <!-- <p class="form-alert" id="name" style="display: none;">Please insert branch name</p> -->
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Account Name <span style="color:red;">*</span></label>
+            <input type="text" class="form-control" id="form-name" placeholder="Account Nmae" value="<?php echo $branch->account_name ?>" name="account_name" required>
+            <!-- <p class="form-alert" id="name" style="display: none;">Please insert branch name</p> -->
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Account Number <span style="color:red;">*</span></label>
+            <input type="text" class="form-control" id="form-name" placeholder="Account Number" value="<?php echo $branch->account_number ?>" name="account_number" required>
+            <!-- <p class="form-alert" id="name" style="display: none;">Please insert branch name</p> -->
+        </div>
     <button class="btn btn-primary" type="submit"> Save Branch</button>
     </form>
 </div>

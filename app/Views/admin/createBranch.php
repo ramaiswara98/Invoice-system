@@ -32,7 +32,24 @@
             </select>
             <p class="form-alert" id="currency" style="display: none;">Please choose currency</p>
         </div>
-        
+        <br/>
+        <p>Payment Info:</p>
+        <hr/>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Bank Name <span style="color:red;">*</span></label>
+            <input type="text" class="form-control" id="form-name" placeholder="Bank Name" name="bank_name" required>
+            <!-- <p class="form-alert" id="name" style="display: none;">Please insert branch name</p> -->
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Account Name <span style="color:red;">*</span></label>
+            <input type="text" class="form-control" id="form-name" placeholder="Account Nmae" name="account_name" required>
+            <!-- <p class="form-alert" id="name" style="display: none;">Please insert branch name</p> -->
+        </div>
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Account Number <span style="color:red;">*</span></label>
+            <input type="text" class="form-control" id="form-name" placeholder="Account Number" name="account_number" required>
+            <!-- <p class="form-alert" id="name" style="display: none;">Please insert branch name</p> -->
+        </div>
     <button class="btn btn-primary" type="button" id="btn-submit"> Add Branch</button>
     </form>
 </div>

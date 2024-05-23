@@ -5,7 +5,13 @@ namespace App\Controllers;
 class DataTable extends BaseController
 {
     public function invoice()
-{
+{   
+    $session = session();
+    $andClause="";
+    if($session->get('role')!= 1){
+        $branch_id = $session->get('branch_id');
+        $andClause = " AND student.branch_id = $branch_id ";
+    }
     $db = db_connect();
     $searchValue = $this->request->getVar('search')['value'];
     $start = $this->request->getVar('start') ?? 0;  // Default to 0 if not set
@@ -38,7 +44,7 @@ class DataTable extends BaseController
         class ON items.class_id = class.id
     INNER JOIN 
         currency ON class.currency_id = currency.id"
-    . $whereClause . 
+    . $whereClause .$andClause. 
     " GROUP BY 
         invoice.id, student.name, currency.code
     ORDER BY invoice.id ASC
@@ -86,6 +92,12 @@ public function countAllStudent() {
 }
 
 public function student (){
+    $session = session();
+    $andClause="";
+    if($session->get('role')!= 1){
+        $branch_id = $session->get('branch_id');
+        $andClause = " AND student.branch_id = $branch_id ";
+    }
     $db = db_connect();
     $searchValue = $this->request->getVar('search')['value'];
     $start = $this->request->getVar('start') ?? 0;  // Default to 0 if not set
@@ -97,8 +109,7 @@ public function student (){
         // Ensure proper escaping and add wildcards for the LIKE comparison
         $searchValue = $db->escapeLikeString($searchValue);
         $whereClause = " WHERE student.name LIKE '%" . $searchValue . "%'" .
-                       " OR student.email LIKE '%" . $searchValue . "%'" .
-                       " OR CAST(invoice.id AS CHAR) LIKE '%" . $searchValue . "%'";
+               " OR student.student_no LIKE '%" . $searchValue . "%'";
     }
     // Full SQL query with placeholders for dynamic data
     $baseQuery = "SELECT 
@@ -108,7 +119,7 @@ public function student (){
         student
     INNER JOIN 
         branch ON student.branch_id = branch.id"
-    . $whereClause . 
+    . $whereClause . $andClause.
     " ORDER BY student.id ASC
     LIMIT $start, $length";
     $student_query = $db->query($baseQuery);

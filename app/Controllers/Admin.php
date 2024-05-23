@@ -53,6 +53,9 @@ class Admin extends BaseController
         $data_b['address'] = $data["address"];
         $data_b['email'] = $data["email"];
         $data_b['currency_id'] = $data["currency"];
+        $data_b['bank_name'] = $data["bank_name"];
+        $data_b['account_name'] = $data["account_name"];
+        $data_b['account_number'] = $data["account_number"];
         $model =  new BranchModel();
         $newBranch = $model->create($data_b);
         $session = session();
@@ -91,7 +94,10 @@ class Admin extends BaseController
             'branch_name' => $data["name"],
             'address' => $data["address"],
             'email' => $data["email"],
-            'currency_id' => $data["currency"]
+            'currency_id' => $data["currency"],
+            'bank_name' => $data['bank_name'],
+            'account_name' => $data['account_name'],
+            'account_number' => $data['account_number']
         );
         $db = db_connect();
         $db->table('branch')->where('id', $id)->update($branch_data);
@@ -642,7 +648,8 @@ class Admin extends BaseController
         $db = db_connect();
 $items_query = $db->query('SELECT * FROM items 
                             INNER JOIN class ON class.id = items.class_id 
-                            INNER JOIN currency ON currency.id = class.currency_id 
+                            INNER JOIN currency ON currency.id = class.currency_id
+                            INNER JOIN branch ON branch.id = class.branch_id 
                             WHERE items.invoice_id = ' . $id);
         $items = $items_query->getResult();
         // var_dump($items);
