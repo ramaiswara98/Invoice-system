@@ -136,7 +136,7 @@ public function student (){
             // $st->grade,
             // $st->address,
             $st->branch_name,
-            "<td><a href='" . base_url() . "admin/create-payment?student-id=" . $st->id . "' type='button' class='btn btn-success'><i class='fa-solid fa-file-circle-plus'></i></a><a href='" . base_url() . "admin/edit-student/" . $st->id . "' type='button' class='btn btn-warning' style='margin-right:10px;margin-left:10px'><i class='fa-solid fa-pen-to-square'></i></a><a href='" . base_url() . "admin/delete-student/" . $st->id . "' type='button' class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>"
+            "<td><a href='" . base_url() . "admin/create-payment?student-id=" . $st->id . "' type='button' class='btn btn-success'><i class='fa-solid fa-file-circle-plus'></i></a><a style='margin-left:10px' href='#' data-bs-toggle='modal' onclick='openClass(".$st->id.")' data-bs-target='#classModal' type='button' class='btn btn-primary'><i class='fa-solid fa-people-roof'></i></a><a href='" . base_url() . "admin/edit-student/" . $st->id . "' type='button' class='btn btn-warning' style='margin-right:10px;margin-left:10px'><i class='fa-solid fa-pen-to-square'></i></a><a href='" . base_url() . "admin/delete-student/" . $st->id . "' type='button' class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>"
         );
     }
     $record['data'] = $fStudent;

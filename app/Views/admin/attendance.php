@@ -109,7 +109,6 @@ async function getAttendance(id, name){
             });
             if (response.ok) {
                 const jsonData = await response.json(); // Parse response as JSON
-                console.log(jsonData);
                 const attendance = jsonData.attendance;
                 const modalBody = document.getElementsByClassName("modal-body")[0]; // Access the first element with class "modal-body"
                 const content = "<table class='table table-striped table-hover'><tr><th>Attendance Date</th><th>Attendance Mark By</th></tr>";

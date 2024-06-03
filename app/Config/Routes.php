@@ -30,7 +30,9 @@ $routes->group('admin', ['filter' => 'authCheck'], function($routes) {
     //attendance
     $routes->get('attendance/(:num)', 'Admin::attendance/$1');
     $routes->post('add-attendance', 'Admin::addAttendance');
+    $routes->post('add-attendance-api', 'Admin::addAttendanceAPI');
     $routes->get('get-attendance/(:num)', 'Admin::getAttendance/$1');
+    $routes->get('get-class/(:num)', 'Admin::listOfClass/$1');
 
     //Invoice
     $routes->get('invoice/(:num)', 'Admin::invoice/$1');

@@ -896,6 +896,18 @@ public function addAttendance(){
   return redirect()->to(base_url()."/admin/attendance/".$id);
 }
 
+public function addAttendanceAPI(){
+  $data = $this->request->getVar();
+  $items_id = $data->items_id;
+  $items_date = $data->items_date;
+  $user_id = $data->user_id;
+ 
+  $db = db_connect();
+  $db->query("INSERT INTO attendance (items_id, items_date,user_id) VALUES ($items_id, '$items_date', '$user_id')");
+  return json_encode("success");
+  // return redirect()->to(base_url()."/admin/attendance/".$id);
+}
+
 public function getAttendance($id){
   $db = db_connect();
   $att_query = $db->query("SELECT attendance.*, users.name AS user_name FROM attendance INNER JOIN users ON users.id = attendance.user_id WHERE attendance.items_id = '$id' ORDER BY items_date DESC");
@@ -956,5 +968,44 @@ public function getImported(){
   }
   
 }
+
+  public function listOfClass($id){
+    $session = session();
+    $data['session'] = $session;
+    $db = db_connect();
+    $query_items = $db->query("
+    SELECT 
+        items.id AS items_id, 
+        items.qty as require_attendance,
+        invoice.id as invoice_no, 
+        class.id as class_id,
+        class.class_name as class_name,
+        student.id as student_id,
+        student.name as student_name,
+        COALESCE(att.attendance_total, 0) AS attendance_total
+    FROM 
+        items
+    INNER JOIN 
+        invoice ON items.invoice_id = invoice.id
+    INNER JOIN 
+        student ON student.id = invoice.student_id
+    INNER JOIN 
+        class ON class.id = items.class_id
+    LEFT JOIN (
+        SELECT 
+            items_id, 
+            COUNT(*) AS attendance_total
+        FROM 
+            attendance
+        GROUP BY 
+            items_id
+    ) AS att ON items.id = att.items_id
+    WHERE 
+        invoice.student_id = $id
+        ORDER BY invoice.date DESC
+  ");
+  $items = $query_items->getResult();
+  return json_encode(['success' => true,'attendance' => $items]);
+  }
 
 }
