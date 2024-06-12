@@ -83,6 +83,13 @@
                         </li>
                     </ul>
                 </li>';
+                            }elseif($session->get('role') == '2'){
+                                echo '
+                        <li class="menu-box">
+                            <a href="' . base_url('admin/edit-branch/') .$session->get('branch_id') .'" class="nav-link px-0 align-middle">
+                                <i class="fa-solid icon fa-building-columns"></i> <span class="ms-1 d-none d-sm-inline">Branch</span>
+                            </a>
+                        </li>';
                             }
 
                             ?>
