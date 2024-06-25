@@ -4,7 +4,7 @@ use CodeIgniter\Model;
 
 class BranchModel extends Model{
     protected $table = 'branch';
-    protected $allowedFields = ['branch_name', 'address','email','currency_id', 'bank_name','account_name', 'account_number'];
+    protected $allowedFields = ['branch_name', 'address','email','phone','currency_id', 'bank_name','account_name', 'account_number'];
 
     function getAll(){
         return $this->findAll();

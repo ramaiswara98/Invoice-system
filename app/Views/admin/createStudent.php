@@ -6,7 +6,7 @@
    <form action="<?php echo base_url();?>admin/save-new-student" method="POST" id="add-student-form">
         <?= csrf_field(); ?>
         <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Student No <span style="color:red;">*</span></label>
+            <label for="exampleFormControlInput1" class="form-label">Student No</label>
             <input type="text" class="form-control" id="studentno-form" placeholder="Student Number" name="student_no">
             <p class="form-alert" id="student-no-alert" style="display: none;">Please enter student number</p>
         </div>
@@ -72,13 +72,13 @@
         var isValid = true;
 
         // Validate student number
-        var studentNo = document.getElementById("studentno-form");
-        if (!studentNo.value.trim()) {
-            document.getElementById("student-no-alert").style.display = "block";
-            isValid = false;
-        } else {
-            document.getElementById("student-no-alert").style.display = "none";
-        }
+        // var studentNo = document.getElementById("studentno-form");
+        // if (!studentNo.value.trim()) {
+        //     document.getElementById("student-no-alert").style.display = "block";
+        //     isValid = false;
+        // } else {
+        //     document.getElementById("student-no-alert").style.display = "none";
+        // }
 
         // Validate student name
         var studentName = document.getElementById("student-name-form");

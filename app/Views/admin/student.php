@@ -112,7 +112,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Import Student</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Student Atendance</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -156,14 +156,25 @@
     </div>
   </div>
 </div>
+
 </div>
 <script src="<?php echo base_url() ?>public/datatable/jquery.dataTables.js"></script>
 <script src="<?php echo base_url() ?>public/datatable/dataTables.bootstrap4.js"></script>
 <script src="<?php echo base_url() ?>public/datatable/dataTables.select.min.js"></script>
 <script>
+  function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
   async function openClass(id){
     console.log(id);
-    
+    var dates = getCurrentDateTime();
     var tbody = document.getElementById('class-table-body');
     var load = document.getElementById('load');
     var base_url = "<?php echo base_url();?>";
@@ -175,12 +186,12 @@
       if(attendance.length > 0){
         for(let i=0;i<attendance.length;i++){
           if((attendance[i].require_attendance - attendance[i].attendance_total) != 1 && (attendance[i].require_attendance - attendance[i].attendance_total) != 0 ){
-            var item = "<tr><td>" + attendance[i].invoice_no + "</td><td>" + attendance[i].class_name + "</td><td>" + attendance[i].attendance_total + "/" + attendance[i].require_attendance + "</td><td><button class='btn btn-primary' onclick='sendAttendance(" + attendance[i].items_id + "," + attendance[i].student_id + ")'><i class='fa-solid fa-user-plus'></i></button> <button onclick='getAttendance(" + attendance[i].items_id + ", \"" + attendance[i].student_name.replace(/"/g, '\\"') + "\")' class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#historyModal'><i class='fa-solid fa-clock-rotate-left'></i></button></td></tr>";
+            var item = "<tr><td>" + attendance[i].invoice_no + "</td><td>" + attendance[i].class_name + "</td><td>" + attendance[i].attendance_total + "/" + attendance[i].require_attendance + "</td><td style='display:flex'><div style='max-width:250px;margin-right:10px' class='input-group'><input class='form-control' type='datetime-local' value='"+dates+"' id='"+attendance[i].items_id+"'></input><button class='btn btn-primary' onclick='sendAttendance("+attendance[i].items_id+","+attendance[i].student_id+")'><i class='fa-solid fa-user-plus'></i></button> </div> <button onclick='getAttendance(" + attendance[i].items_id + ", \"" + attendance[i].student_name.replace(/"/g, '\\"') + "\")' class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#historyModal'><i class='fa-solid fa-clock-rotate-left'></i></button></td></tr>";
           }else{
             if((attendance[i].require_attendance - attendance[i].attendance_total) == 0){
               var item = "<tr><td>"+attendance[i].invoice_no+"</td><td>"+attendance[i].class_name+"</td><td>"+attendance[i].attendance_total+"/"+attendance[i].require_attendance+"</td><td><button disabled class='btn btn-primary' onclick='sendAttendance("+attendance[i].items_id+","+attendance[i].student_id+")'><i class='fa-solid fa-user-plus'></i></button> <button onclick='getAttendance(" + attendance[i].items_id + ", \"" + attendance[i].student_name.replace(/"/g, '\\"') + "\")' class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#historyModal'><i class='fa-solid fa-clock-rotate-left'></i></button><a href='"+base_url+"admin/create-payment?student-id="+attendance[i].student_id+"' class='btn btn-success' style='margin-left:10px'><i class='fa-solid fa-file-circle-plus'></i></a></td></tr>"
             }else{
-              var item = "<tr><td>"+attendance[i].invoice_no+"</td><td>"+attendance[i].class_name+"</td><td>"+attendance[i].attendance_total+"/"+attendance[i].require_attendance+"</td><td><button class='btn btn-primary' onclick='sendAttendance("+attendance[i].items_id+","+attendance[i].student_id+")'><i class='fa-solid fa-user-plus'></i></button> <button onclick='getAttendance(" + attendance[i].items_id + ", \"" + attendance[i].student_name.replace(/"/g, '\\"') + "\")' class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#historyModal'><i class='fa-solid fa-clock-rotate-left'></i></button><a href='"+base_url+"admin/create-payment?student-id="+attendance[i].student_id+"' class='btn btn-success' style='margin-left:10px'><i class='fa-solid fa-file-circle-plus'></i></a></td></tr>"
+              var item = "<tr><td>"+attendance[i].invoice_no+"</td><td>"+attendance[i].class_name+"</td><td>"+attendance[i].attendance_total+"/"+attendance[i].require_attendance+"</td><td style='display:flex'><div style='max-width:250px;margin-right:10px' class='input-group'><input class='form-control' type='datetime-local' value='"+dates+"' id='"+attendance[i].items_id+"'></input><button class='btn btn-primary' onclick='sendAttendance("+attendance[i].items_id+","+attendance[i].student_id+")'><i class='fa-solid fa-user-plus'></i></button> </div><button onclick='getAttendance(" + attendance[i].items_id + ", \"" + attendance[i].student_name.replace(/"/g, '\\"') + "\")' class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#historyModal'><i class='fa-solid fa-clock-rotate-left'></i></button><a href='"+base_url+"admin/create-payment?student-id="+attendance[i].student_id+"' class='btn btn-success' style='margin-left:10px'><i class='fa-solid fa-file-circle-plus'></i></a></td></tr>"
             }
 
           }
@@ -193,11 +204,11 @@
     }
   }
 
-  function getOurDate(){
-    const currentDate = new Date();
+  function getOurDate(date){
+    const currentDate = new Date(date);
 
     // Get the current year, month, day, hours, and minutes
-    const year = currentDate.getFullYear().toString().slice(-2); // Get last two digits of the year
+    const year = currentDate.getFullYear().toString(); // Get last two digits of the year
     const month = currentDate.getMonth() + 1; // Month is zero-indexed, so add 1
     const day = currentDate.getDate();
     const hours = currentDate.getHours();
@@ -208,9 +219,11 @@
     return formattedDate;
   }
   async function sendAttendance(items_id,student_id){
+    const dateElement = document.getElementById(items_id);
+    const dates = getOurDate(dateElement.value);
     const data = {
       items_id,
-      items_date:getOurDate(),
+      items_date:dates,
       user_id:<?php echo $session->get('id');?>
     }
     var base_url = "<?php echo base_url();?>";

@@ -94,6 +94,7 @@ class Admin extends BaseController
             'branch_name' => $data["name"],
             'address' => $data["address"],
             'email' => $data["email"],
+            'phone' => $data["phone"],
             'currency_id' => $data["currency"],
             'bank_name' => $data['bank_name'],
             'account_name' => $data['account_name'],
@@ -290,7 +291,21 @@ class Admin extends BaseController
         $data_b['parent_name'] = $data["parent_name"];
         $data_b['parent_email'] = $data["parent_email"];
         $data_b['branch_id'] = $data["branch"];
-        $data_b['student_no'] = $data["student_no"];
+        //$data_b['student_no'] = $data["student_no"];
+        if($data["student_no"] == ""){
+          $db = db_connect();
+          $branch_id = $data["branch"];
+          $att_query = $db->query("SELECT MAX(student_no) AS student_no FROM student WHERE branch_id = $branch_id LIMIT 1");
+          if ($att_query) {
+            $row = $att_query->getResult();  // Fetch the result as an associative array
+            $st_no = $row[0]->student_no;  // Get the student number from the result
+            $data_b['student_no'] = strval(intval($st_no+1));
+        } else {
+          $data_b['student_no'] = $data["student_no"];
+        }
+        }else{
+          $data_b['student_no'] = $data["student_no"];
+        }
         // var_dump($data_b);
         $model =  new StudentModel();
         $newBranch = $model->create($data_b);
@@ -946,6 +961,21 @@ public function getImported(){
         $bra_name = $st[8];
         $bra_name = strtolower($bra_name);
         $bra_name = str_replace(" ","",$bra_name);
+        if($st[0] == NULL){
+          $db = db_connect();
+          $branch_id = $branches[$bra_name];
+          $att_query = $db->query("SELECT MAX(student_no) AS student_no FROM student WHERE branch_id = $branch_id LIMIT 1");
+          if ($att_query) {
+            $row = $att_query->getResult();  // Fetch the result as an associative array
+            $st_no = $row[0]->student_no;  // Get the student number from the result
+            $st_no = intval($st_no+1);
+        } else {
+            $st_no = $st[0];
+        }
+        }else{
+          $st_no = $st[0];
+        }
+        
         $data_b['name'] = $st[1];
         $data_b['email'] = $st[2];
         $data_b['address'] = $st[3];
@@ -954,7 +984,7 @@ public function getImported(){
         $data_b['parent_name'] = $st[6];
         $data_b['parent_email'] = $st[7];
         $data_b['branch_id'] =  $branches[$bra_name];
-        $data_b['student_no'] = $st[1];
+        $data_b['student_no'] = strval($st_no);
         $model =  new StudentModel();
         $newBranch = $model->create($data_b);
         if($newBranch){

@@ -17,7 +17,7 @@ class="btn btn-primary" onclick="sendPDFToController('<?= $student['parent_email
         <div class="right-side-first-row">
             <h4>Aedno Consulting Pte.Ltd.</h4>
             <p>Website: www.aedno.com</p>
-            <p>Tel: 91139149</p>
+            <p>Tel: <?=$items[0]->phone?></p>
         </div>
     </div>
 

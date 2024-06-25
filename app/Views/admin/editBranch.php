@@ -16,6 +16,10 @@
             <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" name="email" value="<?php echo $branch->email?>">
         </div>
         <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Branch Phone Number</label>
+            <input type="tel" class="form-control" id="exampleFormControlInput1" placeholder="+62812323223" name="phone" value="<?php echo $branch->phone?>">
+        </div>
+        <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Branch Address</label>
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="address" value="<?php echo $branch->address?>"><?php echo $branch->address?></textarea>
         </div>
