@@ -146,6 +146,25 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li class="menu-box">
+                                <button onclick="submit()"  class="nav-link px-0 align-middle">
+                                <i class="fa-solid fa-clipboard-user"></i> <span class="ms-1 d-none d-sm-inline">Attendance</span> </a>
+                            </li>
+                            <script>
+                                function submit(){
+                                    // var form = document.getElementById('att-form');
+                                    // var in_date = document.getElementById('datenow');
+                                    var base = "<?php echo base_url('admin/attendance/'); ?>";
+                                    const date = new Date();
+                                    const day = String(date.getDate()).padStart(2, '0');
+                                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                                    const year = date.getFullYear();
+                                    var dates = `${day}-${month}-${year}`;;
+                                    window.location.href = base+dates;
+                                  
+                                   
+                                }
+                            </script>
 
                         </ul>
                         <hr>

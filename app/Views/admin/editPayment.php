@@ -74,17 +74,18 @@
                 <option value="Unpaid">Unpaid</option>
             </select>
         </div>
+        <div id="paid-container">
         <div class="paid" id="receive" style="display: none;">
             <input type="hidden" name="receive_id" value="<?php echo $r_id = isset($receive->id) ? $receive->id : 0;?>"/>
             <div class="row">
             <div class="col">
-                <label for="exampleFormControlInput1" class="form-label">Receive Date</label>
+                <label for="exampleFormControlInput1" class="form-label">Receipt Date</label>
                 <input type="date" class="form-control" value="" id="r_date" placeholder="Example: IDR, SGD, USD" name="r_date">
 
             </div>
-            <div class="col">
-                <label for="exampleFormControlInput1" class="form-label">Receive No</label>
-                <input type="text" class="form-control"  id="r_no" placeholder="Receive No" name="r_no">
+            <div class="col" style='display:none'>
+                <label for="exampleFormControlInput1" class="form-label">Receipt No</label>
+                <input type="hidden" class="form-control"  id="r_no" placeholder="Receive No" name="r_no">
 
             </div>
             <div class="col">
@@ -98,11 +99,19 @@
             </div>
             <div class="col">
                 <label for="exampleFormControlInput1" class="form-label">Amount</label>
-                <input type="number" class="form-control" value="0" id="r_amount" placeholder="Amount" name="r_amount">
+                <input type="number" class="form-control" value="0" id="r_amount" placeholder="Amount" name="r_amount" onchange="changeAmount(this.value)">
 
             </div>
-            </div>
+            <div class="col">
+            <button class="btn btn-danger mt-4 delete-btn">Delete</button>
         </div>
+            </div>
+            
+        </div>
+        </div>
+        <div style="margin-top: 20px;">
+            <button id="addMoreReceiptBtn" class="btn btn-primary">Add More  Receipt</button>
+            </div>
         <hr />
         <div class="row" style="justify-content: end;text-align:end">
             <div class="col">
@@ -119,6 +128,61 @@
         <button class="btn btn-primary" type="submit"> Generate Invoice</button>
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let index = 1; // Start index from 1 since the initial one has index 0
+
+        document.getElementById('addMoreReceiptBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Clone the initial receipt div
+            let originalDiv = document.getElementById('receive');
+            let newDiv = originalDiv.cloneNode(true);
+
+            // Update the id and name attributes of the new div and its children
+            newDiv.id = `receive${index}`;
+
+            Array.from(newDiv.querySelectorAll('input, select')).forEach(function(element) {
+                let nameAttr = element.getAttribute('name');
+                let idAttr = element.getAttribute('id');
+                if (nameAttr) {
+                    element.setAttribute('name', nameAttr.replace(/\d+$/, '') + index);
+                }
+                if (idAttr) {
+                    element.setAttribute('id', idAttr.replace(/\d+$/, '') + index);
+                }
+                // Clear values for cloned elements
+                if (element.tagName === 'INPUT' && element.type !== 'hidden') {
+                    element.value = '';
+                }
+                if(element.id.includes('r_amount')){
+                    element.onchange = function(){
+                        changeAmount(this.value);
+                    }
+                }
+            });
+
+            // Make the new div visible
+            newDiv.style.display = 'block';
+
+            // Append the new div to the document
+            originalDiv.parentNode.appendChild(newDiv);
+
+            // Attach delete event to the delete button
+            newDiv.querySelector('.delete-btn').addEventListener('click', function() {
+                newDiv.remove();
+            });
+
+            // Increment the index for the next cloned div
+            index++;
+        });
+
+        // Attach delete event to the initial delete button
+        document.querySelector('.delete-btn').addEventListener('click', function() {
+            document.getElementById('receive0').remove();
+        });
+    });
+</script>
 <script>
     // Function to calculate amount for a specific index
     function calculateAmount(index) {
@@ -198,6 +262,17 @@
         calculateEveything();
         
     })
+
+    function changeAmount(value){
+        console.log("makan")
+        var paidTotalElement = document.getElementById("total-paid");
+        var paidTotalText = paidTotalElement.textContent;
+        var paidTotalValue = paidTotalText.split(" ")[1];
+        console.log(paidTotalValue);
+        const c_total_paid = parseFloat(paidTotalValue)+parseFloat(value);
+        paidTotalElement.innerHTML =paidTotalText.split(" ")[0]+" "+c_total_paid;
+        calculateEveything();
+    }
     document.getElementById("student_id").addEventListener('change', function(){
         var selectedOption = this.options[this.selectedIndex];
         var branch_id = selectedOption.getAttribute('data-branch');
@@ -282,7 +357,7 @@ function updatePaid() {
             var r_amountElement = document.getElementById('r_amount');
 
             r_dateElement.value = "<?php echo $r_date = isset($receive->receive_date) ? $receive->receive_date : null;?>";
-            r_noElement.value = "<?php echo $r_no = isset($receive->receive_no) ? $receive->receive_no : "";?>";
+            r_noElement.value = "<?php echo $r_no = isset($receive->id) ? $receive->id : "";?>";
             r_byElement.value = "<?php echo $r_methode = isset($receive->method) ? $receive->method : 0;?>";
             r_amountElement.value = "<?php echo $r_amount1 = isset($receive->amount) ? $receive->amount : 0;?>";
             var met = <?php echo $r_met = isset($receive->method) ? $receive->method : 0;?> ;

@@ -28,8 +28,9 @@ $routes->group('admin', ['filter' => 'authCheck'], function($routes) {
     $routes->get('dashboard', 'Admin::dashboard');
 
     //attendance
-    $routes->get('attendance/(:num)', 'Admin::attendance/$1');
+    $routes->get('attendance/(:any)', 'Admin::attendance/$1');
     $routes->post('add-attendance', 'Admin::addAttendance');
+    $routes->get('delete-attendance/(:num)', 'Admin::deleteAttendance/$1');
     $routes->post('add-attendance-api', 'Admin::addAttendanceAPI');
     $routes->get('get-attendance/(:num)', 'Admin::getAttendance/$1');
     $routes->get('get-class/(:num)', 'Admin::listOfClass/$1');

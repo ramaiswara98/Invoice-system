@@ -38,6 +38,7 @@
 
 
                             </select>
+                            <input type="text" style="display: none;margin-top:5px" class="form-control" value="" id="item1" placeholder="Item Name" name="item1">
                         </div>
                         <div class="form-qty">
                             <label for="exampleFormControlInput1" class="form-label">Qty</label>
@@ -81,9 +82,9 @@
                 <input type="date" class="form-control" value="" id="r_date" placeholder="Example: IDR, SGD, USD" name="r_date">
                 <p class="form-alert" id="r-date-alert" style="display: none;">Please choose receive date</p>
             </div>
-            <div class="col">
+            <div class="col" style="display: none;">
                 <label for="exampleFormControlInput1" class="form-label">Receive No  <span style="color:red;">*</span></label>
-                <input type="text" class="form-control"  id="r_no" placeholder="Receive No" name="r_no">
+                <input type="text" class="form-control"  id="r_no" placeholder="Receive No" name="r_no" value="2005">
                 <p class="form-alert" id="r-no-alert" style="display: none;">Please Enter receive number</p>
             </div>
             <div class="col">
@@ -240,7 +241,7 @@
             if(firstElemet == null){
                 firstElemet = receiveByElement;
             }
-            console.log("Makan");
+            
         }else{
             receiveByAlertElement.style.display = "none";
         }
@@ -306,8 +307,21 @@
             var selectedIndex = this.selectedIndex;
             var selectedOption = this.options[selectedIndex];
             var price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
-            document.getElementById('price' + index).value = price.toFixed(2);
-            calculateAmount(index);
+            if(selectedOption.value == "other"){
+                var priceElement = document.getElementById('price'+index);
+                var itemElement = document.getElementById('item'+index);
+                priceElement.disabled = false;
+                itemElement.style.display ="block";
+                console.log(itemElement);
+            }else{
+                var priceElement = document.getElementById('price'+index);
+                priceElement.disabled = true;
+                var itemElement = document.getElementById('item'+index);
+                itemElement.style.display ="none";
+                document.getElementById('price' + index).value = price.toFixed(2);
+                calculateAmount(index);
+            }
+            
         };
     }
 
@@ -317,6 +331,7 @@
             document.getElementById('qty' + i).addEventListener('input', calculateAmount.bind(null, i));
             document.getElementById('discount' + i).addEventListener('input', calculateAmount.bind(null, i));
             document.getElementById('select-class' + i).addEventListener('change', handleChange(i));
+            document.getElementById('price' + i).addEventListener('input', calculateAmount.bind(null, i));
         }
     }
 
@@ -378,6 +393,7 @@
             }
             
         })
+        makan+= "<option value=other>Other</option>"
         classess.innerHTML = makan;
         document.getElementById("add-more-class").removeAttribute("disabled");
        

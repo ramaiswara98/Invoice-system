@@ -19,7 +19,7 @@
       echo '<th scope="row">'.$c->class_id.'</th>';
       echo '<td>'.$c->class_name.'</td>';
       echo '<td>'.$c->code." ".$c->price.'</td>';
-      echo "<td><a href='" . base_url() . "admin/attendance/" . $c->class_id . "' type='button' class='btn btn-success' style='margin-right:10px;'><i class='fa-solid fa-user'></i></a><a href='" . base_url() . "admin/edit-class/" . $c->class_id . "' type='button' class='btn btn-warning' style='margin-right:10px;margin-left:10px'><i class='fa-solid fa-pen-to-square'></i></a><a href='" . base_url() . "admin/delete-class/" . $c->class_id . "' type='button' class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>";
+      echo "<td><a href='" . base_url() . "admin/edit-class/" . $c->class_id . "' type='button' class='btn btn-warning' style='margin-right:10px;margin-left:10px'><i class='fa-solid fa-pen-to-square'></i></a><a href='" . base_url() . "admin/delete-class/" . $c->class_id . "' type='button' class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>";
       echo '</tr>';
    } ?>
 

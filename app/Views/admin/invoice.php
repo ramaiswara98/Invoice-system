@@ -40,7 +40,7 @@ class="btn btn-primary" onclick="sendPDFToController('<?= $student['parent_email
                 <p><?= $student['parent_name'];?></p>
             </div>
             <div class="info-box-left-text">
-                <p class="info-box-label">Contac: </p>
+                <p class="info-box-label">Contact: </p>
                 <p><?= $student['email'];?></p>
             </div>
 
@@ -126,13 +126,27 @@ class="btn btn-primary" onclick="sendPDFToController('<?= $student['parent_email
 
     <div>
         <p><strong>Offical Use (Transactions)</strong></p>
-        <div class="offical">
-            <p class="offical-text ">Date Receive</p>
-            <p class="offical-text ">Receipt No.</p>
-            <p class="offical-text ">Payment By</p>
-            <p class="offical-text ">Amount</p>
-        </div>
-
+        <?php 
+        if(count($receive) > 0){
+        foreach($receive as $rec){
+            $payM = $rec->method == 1 ? 'Cash' : 'Transfer';
+            echo " <div class='offical'>";
+            echo "<p class='offical-text '>Date Receive: $rec->receive_date</p>";
+            echo "<p class='offical-text '>Receipt No.: $rec->id</p>";
+            echo " <p class='offical-text '>Payment By: $payM</p>";
+            echo "<p class='offical-text '>Amount: $currency $rec->amount</p>";
+            echo" </div>";
+        } 
+    }else{
+        echo " <div class='offical'>";
+            echo "<p class='offical-text '>Date Receive: </p>";
+            echo "<p class='offical-text '>Receipt No.: </p>";
+            echo " <p class='offical-text '>Payment By: </p>";
+            echo "<p class='offical-text '>Amount: </p>";
+            echo" </div>";
+    }
+        ?>
+       
     </div>
 
     <div class="term">

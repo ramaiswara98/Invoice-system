@@ -117,12 +117,12 @@ class Admin extends BaseController
           $db = db_connect();
           $class_query = $db->query("SELECT class.id as class_id, class.*,currency.* FROM class 
           INNER JOIN currency ON currency.id = class.currency_id
-          WHERE class.branch_id = $branch_id");
+          WHERE class.branch_id = $branch_id AND class.other = 0");
           $class = $class_query->getResult();
         }else{
           $db = db_connect();
           $class_query = $db->query("SELECT class.id as class_id, class.*,currency.* FROM class 
-          INNER JOIN currency ON currency.id = class.currency_id");
+          INNER JOIN currency ON currency.id = class.currency_id WHERE class.other = 0");
           $class = $class_query->getResult();
         }
         // $model =  new ClassModel();
@@ -439,7 +439,7 @@ class Admin extends BaseController
         $class = $modelClass->getAll();
         $db = db_connect();
         $class_query = $db->query('SELECT class.id as class_id,class.*,currency.* FROM class
-        INNER JOIN currency ON currency.id = class.currency_id');
+        INNER JOIN currency ON currency.id = class.currency_id WHERE class.other = 0');
 
         $class = $class_query->getResult();
         $data['student'] = $student;
@@ -471,10 +471,33 @@ class Admin extends BaseController
           $newInvoice = $model->create($data_b);
           $data_i['invoice_id'] = $newInvoice;
           $total_item = $data["class_sum"];
+          $db = db_connect();
+          $student_id = $data["student_id"];
+          $currency_query = $db->query("SELECT currency.id as currency, branch.id as branch_id FROM student
+        INNER JOIN branch ON branch.id = student.branch_id INNER JOIN currency ON currency.id = branch.currency_id WHERE student.id = $student_id");
+
+          $currency = $currency_query->getFirstRow();
+          $branch_id = $currency->branch_id;
+          $currency = $currency->currency;
+        
+
           for ($i=0;$i<$total_item;$i++){
-            $data_i['class_id'] = $data["class".$i+1];
-            $data_i['qty'] = $data["qty".$i+1];
-            $data_i['discount'] = $data["discount".$i+1];
+            if($data["class".$i+1] == "other"){
+              $data_i['qty'] = $data["qty".$i+1];
+              $data_i['discount'] = $data["discount".$i+1];
+              $class_add_query = $db->query("INSERT INTO class (class_name, price,branch_id, currency_id, other) VALUES ('" . $data['item'.($i+1)] . "', '" . $data['price'.($i+1)] . "','$branch_id', '$currency', 1)");
+              $inserted_id = $db->query("SELECT LAST_INSERT_ID() as id");
+              $result = $inserted_id->getFirstRow();
+              $new_class_id = $result->id;
+              $data_i['class_id'] = $new_class_id;
+
+
+            }else{
+              $data_i['class_id'] = $data["class".$i+1];
+              $data_i['qty'] = $data["qty".$i+1];
+              $data_i['discount'] = $data["discount".$i+1];
+            }
+           
             $model_items->create($data_i);
           }
           if($data_b['status'] == "Paid"){
@@ -515,7 +538,7 @@ class Admin extends BaseController
         WHERE items.invoice_id = $id");
         $items = $items_query->getResult();
         $receive_query = $db->query("SELECT * FROM receive WHERE receive.invoice_id = $payment->invoice_id");
-        $receive = $receive_query->getFirstRow();
+        $receive = $receive_query->getResult();
         $data['student'] = $student;
         $data['class'] = $class;
         $data['payment'] = $payment;
@@ -524,53 +547,35 @@ class Admin extends BaseController
         $data['receive'] = $receive;
         $session = session();
         $data['session'] = $session;
-          return view('admin/editPayment', $data);
+          return view('admin/editPayment2', $data);
       }
 
       public function savePayment(){
         $data = $this->request->getVar();
-        $status = $data['status'];
-        $invoice_id= $data['invoice_id'];
         $db = db_connect();
-          if($status == "Paid"){
-            $receive['receive_no'] = $data['r_no'];
-            $receive['receive_date'] = $data['r_date'];
-            $receive['amount'] = $data['r_amount'];
-            $receive['method'] = $data['r_by'];
-            $receive['id'] = $data['receive_id'];
-            $db->query("UPDATE invoice SET status = '$status' WHERE invoice.id = $invoice_id");
-            if ($receive['id'] == 0) {
-              // If $receive['id'] is 0, create a new row
-              $db->query("INSERT INTO receive (receive_no, receive_date, amount, method, invoice_id) VALUES (
-                      '{$receive['receive_no']}',
-                      '{$receive['receive_date']}',
-                      '{$receive['amount']}',
-                      '{$receive['method']}',
-                      $invoice_id
-                      )");
-          } else {
-              // If $receive['id'] is not 0, update the existing row
-              $db->query("UPDATE receive SET 
-                      receive_no = '{$receive['receive_no']}',
-                      receive_date = '{$receive['receive_date']}',
-                      amount = '{$receive['amount']}',
-                      method = '{$receive['method']}'
-                      WHERE id = {$receive['id']}");
+        $status = $data['status'];
+        $done = $data['done'];
+        $invoice_id = $data['invoice_id'];
+        if($status == "Paid" && $done != "yes"){
+          $state = $data['state'];
+          if($state == "0"){
+            $q = $db->query("UPDATE invoice SET status='Paid' WHERE id = $invoice_id");
           }
-            
-            
-          }else{
-            $receive_id = $data['receive_id'];
-            $db->query("UPDATE invoice SET status = '$status' WHERE invoice.id = $invoice_id");
-            if($receive_id != 0){
-              $db->query("DELETE FROM receive where id = $receive_id");
-            }
-            echo "Success";
-          }
+          $date = strval($data['r_date']);
+          $method = $data['r_by'];
+          $amount = $data['r_amount'];
+          $invoice_id = $data['invoice_id'];
+          $method = (int)$method;
+          $query_string = "INSERT INTO receive (receive_no,receive_date,amount,invoice_id, method) VALUES ('none','$date',$amount,$invoice_id, $method)";
+          // echo $query_string;
+          $query = $db->query($query_string);
+          
+          return redirect()->to(base_url()."/admin/invoice/".$invoice_id);
+        }else{
+          return redirect()->to(base_url()."/admin/invoice/".$invoice_id);
+        }
+        
 
-          
-          
-          // return redirect()->to(base_url()."/admin/invoice/".$newInvoice);
       }
 
       //Users
@@ -865,38 +870,30 @@ $items_query = $db->query('SELECT * FROM items
   }
     
 
-public function attendance($id){
+public function attendance($date){
+  // $data = $this->request->getVar();
   $session = session();
   $data['session'] = $session;
   $db = db_connect();
-  $query_items = $db->query("
+  $datenow = $date;
+  $datenow = $datenow.'%';
+  if($session->get('role') != '1'){
+    $branch_id = $session->get('branch_id');
+$query_items = $db->query("
   SELECT 
-      items.id AS items_id, 
-      items.*, 
-      invoice.*, 
-      student.*, 
-      COALESCE(att.attendance_total, 0) AS attendance_total
-  FROM 
-      items
-  INNER JOIN 
-      invoice ON items.invoice_id = invoice.id
-  INNER JOIN 
-      student ON student.id = invoice.student_id
-  LEFT JOIN (
-      SELECT 
-          items_id, 
-          COUNT(*) AS attendance_total
-      FROM 
-          attendance
-      GROUP BY 
-          items_id
-  ) AS att ON items.id = att.items_id
-  WHERE 
-      class_id = $id
+      attendance.id as attendance_id,attendance.*, class.*, invoice.*, student.* FROM attendance INNER JOIN items ON items.id = attendance.items_id INNER JOIN invoice ON invoice.id = items.invoice_id INNER JOIN class ON class.id = items.class_id INNER JOIN student ON student.id = invoice.student_id WHERE student.branch_id = $branch_id AND items_date LIKE '$datenow';
 ");
+  }else{
+    $query_items = $db->query("
+  SELECT 
+      attendance.id as attendance_id,attendance.*, class.*, invoice.*, student.* FROM attendance INNER JOIN items ON items.id = attendance.items_id INNER JOIN invoice ON invoice.id = items.invoice_id INNER JOIN class ON class.id = items.class_id INNER JOIN student ON student.id = invoice.student_id WHERE items_date LIKE '$datenow';
+");
+  }
 $items = $query_items->getResult();
   $data['items'] = $items;
-  $data['class_id'] = $id;
+  $dateObj = \DateTime::createFromFormat('d-m-Y', $date);
+  $fromatDate = $dateObj->format('Y-m-d');
+  $data['datenow'] =$fromatDate;
   return view('/admin/attendance',$data);
 }
 
@@ -1031,11 +1028,17 @@ public function getImported(){
             items_id
     ) AS att ON items.id = att.items_id
     WHERE 
-        invoice.student_id = $id
+        invoice.student_id = $id AND class.other = 0
         ORDER BY invoice.date DESC
   ");
   $items = $query_items->getResult();
   return json_encode(['success' => true,'attendance' => $items]);
   }
 
+
+  function deleteAttendance($id){
+    $db= db_connect();
+    $db->query("DELETE FROM attendance where id = $id");
+    return json_encode(['success' => true]);
+  }
 }

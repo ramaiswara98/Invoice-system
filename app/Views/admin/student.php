@@ -144,7 +144,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Attendance</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="historyBody">
@@ -245,6 +245,22 @@
       console.log('something wrong')
     }
   }
+
+  async function deleteAttendance(id,iId,name){
+    var base_url = "<?php echo base_url();?>";
+    var response =  await fetch(base_url+'admin/delete-attendance/'+id,{
+      method:'GET'
+    });
+    if(response.ok){
+      const jsonData = await response.json();
+      console.log(jsonData);
+      if(jsonData.success){
+        getAttendance(iId,name);
+      }
+    }else{
+      
+    }
+  }
   async function getAttendance(id, name){
     var title = document.getElementById('exampleModalLabel');
     title.innerHTML=name;
@@ -259,10 +275,21 @@
                 const jsonData = await response.json(); // Parse response as JSON
                 const attendance = jsonData.attendance;
                 const modalBody = document.getElementById('historyBody'); // Access the first element with class "modal-body"
-                const content = "<table class='table table-striped table-hover'><tr><th>Attendance Date</th><th>Attendance Mark By</th></tr>";
+                const content = "<table class='table table-striped table-hover'><tr><th>Attendance Date</th><th>Attendance Mark By</th><th>Action</th></tr>";
                 var contents="";
                 for(let i=0;i< attendance.length;i++){
-                    var items = "<tr><td>"+attendance[i].items_date+"</td><td>"+attendance[i].user_name+"</td></tr>"
+                    // var items = "<tr><td>"+attendance[i].items_date+"</td><td>"+attendance[i].user_name+"</td><td><button class='btn btn-danger' onClick='deleteAttendance("+attendance[i].id+","+id+","+name+")'><i class='fa-solid fa-trash'></i></button></td></tr>"
+                    var items = 
+                "<tr>" +
+                  "<td>" + attendance[i].items_date + "</td>" +
+                  "<td>" + attendance[i].user_name + "</td>" +
+                  "<td>" +
+                    "<button class='btn btn-danger' onClick='deleteAttendance(" + attendance[i].id + ",\"" + id + "\",\"" + name + "\")'>" +
+                      "<i class='fa-solid fa-trash'></i>" +
+                    "</button>" +
+                  "</td>" +
+                "</tr>";
+
                     contents = contents+items;
                 }
                 const content3 = "</table>";
